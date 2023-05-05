@@ -6,10 +6,12 @@ let tweets = [
   {
     id: "1",
     text: "first one",
+    userId: "2",
   },
   {
     id: "2",
     text: "second one",
+    userId: "1",
   },
 ];
 
@@ -18,6 +20,11 @@ let users = [
     id: "1",
     firstname: "ha",
     lastname: "seungo",
+  },
+  {
+    id: "2",
+    firstname: "elon",
+    lastname: "musk",
   },
 ];
 
@@ -94,6 +101,12 @@ const resolvers = {
   User: {
     fullName({ firstname, lastname }: unknown) {
       return `${firstname} ${lastname}`;
+    },
+  },
+
+  Tweet: {
+    author({ userId }: any) {
+      return users.find((user) => user.id === userId);
     },
   },
 };
