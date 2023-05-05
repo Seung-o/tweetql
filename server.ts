@@ -13,10 +13,22 @@ let tweets = [
   },
 ];
 
+let users = [
+  {
+    id: "1",
+    firstname: "ha",
+    lastname: "seungo",
+  },
+];
+
+// Init Graphql
+
 const typeDefs = gql`
   type User {
     id: ID
-    name: String
+    firstname: String
+    lastname: String
+    fullName: String
   }
 
   type Tweet {
@@ -28,6 +40,7 @@ const typeDefs = gql`
   type Query {
     allTweets: [Tweet!]!
     tweet(id: ID!): Tweet
+    allUsers: [User!]!
   }
 
   type Mutation {
@@ -41,15 +54,23 @@ const resolvers = {
     allTweets() {
       return tweets;
     },
-    tweet(_: any, { id }: any): { id: string; text: string } | undefined {
+
+    tweet(
+      _: unknown,
+      { id }: unknown
+    ): { id: string; text: string } | undefined {
       return tweets.find((tweet) => tweet.id === id);
+    },
+
+    allUsers() {
+      return users;
     },
   },
 
   Mutation: {
     postTweet(
-      _: any,
-      { text, userId }: any
+      _: unknown,
+      { text, userId }: unknown
     ): { id: string; text: string; userId: string } {
       const newTweet = {
         id: String(tweets.length + 1),
@@ -61,12 +82,18 @@ const resolvers = {
       return newTweet;
     },
 
-    deleteTweet(_: any, { id }: any): boolean {
+    deleteTweet(_: unknown, { id }: unknown): boolean {
       const tweet = tweets.find((tweet) => tweet.id === id);
       if (!tweet) return false;
 
       tweets = tweets.filter((tweet) => tweet.id !== id);
       return true;
+    },
+  },
+
+  User: {
+    fullName({ firstname, lastname }: unknown) {
+      return `${firstname} ${lastname}`;
     },
   },
 };
