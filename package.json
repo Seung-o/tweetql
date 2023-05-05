@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsc && nodemon ./dist/server.js",
+    "dev": "nodemon --watch '**/*.ts' --exec 'ts-node' ./server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -23,6 +23,5 @@
     "eslint-plugin-promise": "^6.1.1",
     "nodemon": "^2.0.22",
     "typescript": "^5.0.4"
-  },
-  "type": "module"
+  }
 }

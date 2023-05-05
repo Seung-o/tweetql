@@ -2,7 +2,7 @@ import { ApolloServer, gql } from "apollo-server";
 
 // Fake Database
 
-const tweets = [
+let tweets = [
   {
     id: "1",
     text: "first one",
@@ -31,7 +31,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    postTweet(text: String, userId: ID): Tweet
+    postTweet(text: String!, userId: ID!): Tweet
     deleteTweet(id: ID): Boolean
   }
 `;
@@ -41,8 +41,32 @@ const resolvers = {
     allTweets() {
       return tweets;
     },
-    tweet(root, args: { id: string }) {
-      return tweets.find((tweet) => tweet.id === args.id);
+    tweet(_: any, { id }: any): { id: string; text: string } | undefined {
+      return tweets.find((tweet) => tweet.id === id);
+    },
+  },
+
+  Mutation: {
+    postTweet(
+      _: any,
+      { text, userId }: any
+    ): { id: string; text: string; userId: string } {
+      const newTweet = {
+        id: String(tweets.length + 1),
+        text,
+        userId,
+      };
+
+      tweets.push(newTweet);
+      return newTweet;
+    },
+
+    deleteTweet(_: any, { id }: any): boolean {
+      const tweet = tweets.find((tweet) => tweet.id === id);
+      if (!tweet) return false;
+
+      tweets = tweets.filter((tweet) => tweet.id !== id);
+      return true;
     },
   },
 };
